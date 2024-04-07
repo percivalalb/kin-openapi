@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"net/url"
 	"sort"
 
 	"github.com/go-openapi/jsonpointer"
@@ -559,6 +560,8 @@ func (x *ResponseRef) JSONLookup(token string) (interface{}, error) {
 // SchemaRef represents either a Schema or a $ref to a Schema.
 // When serializing and both fields are set, Ref is preferred over Value.
 type SchemaRef struct {
+	FilePath *url.URL
+
 	Ref   string
 	Value *Schema
 	extra []string

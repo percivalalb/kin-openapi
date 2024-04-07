@@ -195,6 +195,8 @@ func (loader *Loader) ResolveRefsIn(doc *T, location *url.URL) (err error) {
 		loader.resetVisitedPathItemRefs()
 	}
 
+	doc.FilePath = location
+
 	if components := doc.Components; components != nil {
 		for _, component := range components.Headers {
 			if err = loader.resolveHeaderRef(doc, component, location); err != nil {
@@ -796,6 +798,11 @@ func (loader *Loader) resolveSchemaRef(doc *T, component *SchemaRef, documentPat
 	}
 
 	if ref := component.Ref; ref != "" {
+		copy := *documentPath
+		copy.Path = filepath.Dir(copy.Path)
+		copy.Path = filepath.Join(copy.Path, ref)
+		component.FilePath = &copy
+
 		if isSingleRefElement(ref) {
 			var schema Schema
 			if documentPath, err = loader.loadSingleElementFromURI(ref, documentPath, &schema); err != nil {
